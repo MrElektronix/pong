@@ -11,7 +11,7 @@ package screens
 	import flash.geom.Point;
 	import utils.MovementCalculator;
 	import screens.Scoreboard;
-	
+	import sounds.SoundPlayer;
 	/**
 	 * ...
 	 * @author erwin henraat
@@ -21,16 +21,25 @@ package screens
 		private var balls:Array = [];
 		private var paddles:Array = [];
 		private var scoreboard:Scoreboard;
+		private var achievement:Achievement;
+		
+
 		static public const GAME_OVER:String = "game over";
 		static public const BALL_BOUNCE:String = "ballBounce";
+		static public const ON_LEFT_OUT:String = "on left out"
+		
 		public function GameScreen() 
 		{
 			this.addEventListener(Event.ADDED_TO_STAGE, init);			
 		}				
 		private function init(e:Event):void 
 		{
+			
 			removeEventListener(Event.ADDED_TO_STAGE, init);
-				for (var i:int = 0; i < 2; i++) 
+			
+			
+			
+			for (var i:int = 0; i < 1; i++) 
 			{
 				balls.push(new Ball());
 				addChild(balls[i]);
@@ -42,6 +51,7 @@ package screens
 			}	
 			paddles.push(new AI());
 			paddles.push(new Player());
+			paddles[1].speedmax = 10;
 			paddles[0].balls = balls;
 			for (i = 0; i < 2; i++) 
 			{
@@ -57,6 +67,9 @@ package screens
 			addChild(scoreboard);
 			
 			this.addEventListener(Event.ENTER_FRAME, loop);
+			
+			achievement = new Achievement(this);
+		
 		}		
 		
 		private function loop(e:Event):void 
@@ -88,6 +101,10 @@ package screens
 			scoreboard.player2 += 1;
 			
 			checkScore();
+				
+			
+			
+			dispatchEvent(new Event(ON_LEFT_OUT));
 		}		
 		private function onRightOut(e:Event):void 
 		{
